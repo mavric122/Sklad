@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ tovar.title }}{% endblock %}
+
+{% block content %}
+
+<div class="container-xl">
+  
+    <dl class="row">
+
+      <a href="{{request.META.HTTP_REFERER}}">Назад</a>
+
+        <dt class="col-sm-3">Наименование: </dt>
+        <dd class="col-sm-9">{{ tovar.title }}</dd>
+
+        <dt class="col-sm-3">Категория: </dt>
+        <dd class="col-sm-9">{{ tovar.category }}</dd>
+      
+        <dt class="col-sm-3">Цвет:</dt>
+        <dd class="col-sm-9">{{ tovar.color }}</dd>
+
+        <dt class="col-sm-3">Количество:</dt>
+        <dd class="col-sm-9">{{ tovar.amount }}</dd>
+
+        <dt class="col-sm-3">Номер:</dt>
+        <dd class="col-sm-9">{{ tovar.number }}</dd>
+
+        <dt class="col-sm-3">В наличии?:</dt>
+        <dd class="col-sm-9">{{ tovar.there_is }}</dd>
+        
+        <dt class="col-sm-3">Дата первого появления:</dt>
+        <dd class="col-sm-9">{{ tovar.data_create }}</dd>
+
+        <dt class="col-sm-3">Сделать кнопку редактирования:</dt>
+        <dd class="col-sm-9">Кнопка редактирования</dd>
+      
+    </dl>
+</div>
+
+
+{% endblock %}

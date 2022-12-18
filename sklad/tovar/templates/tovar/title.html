@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}Главная страница{% endblock %}
+
+{% block content %}
+<!-- Контейнер основной страницы   -->
+<div class="container">
+
+  <h3> Список доступных приложений </h3>
+
+  <div class="btn-group">
+    <a href="{% url 'mavric' %}" class="btn btn-primary active" aria-current="page">Склад v.0.1.</a>
+
+  </div>
+
+</div>
+<!-- Конец контейнера основной страницы  -->
+{% endblock %}

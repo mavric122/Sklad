@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block title %}Список категорий{% endblock %}
+
+{% block content %}
+<!-- Контейнер основной страницы   -->
+<div class="container">
+
+    <h1>Выберите категорию:</h1>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="list-group">
+                {% for item in all_category %}
+                <a href="{{ item.get_absolute_url }}"
+                    class="list-group-item list-group-item-action list-group-item-primary">
+                    {{ item.title }}
+                </a>
+                {% endfor %}
+                <a href="{% url 'add_category' %}"
+                class="list-group-item list-group-item-action list-group-item-info">
+                Добавить категорию
+            </a>
+            </div>
+            </a>
+        </div>
+    </div>
+</div>
+<!-- Конец контейнера основной страницы  -->
+{% endblock %}

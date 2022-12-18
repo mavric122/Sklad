@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}Склад v.0.1.{% endblock %}
+
+{% block content %}
+<!-- Контейнер основной страницы   -->
+
+<div class="container">
+
+    <h3> Добро пожаловать в приложение Склад v.0.1. </h3>
+  
+    <div class="btn-group">
+      <a href="{% url 'spisok_category' %}" class="btn btn-primary active" aria-current="page">Категории</a>
+  
+    </div>
+  
+  </div>
+
+<!-- Конец контейнера основной страницы  -->
+{% endblock %}
+
+
+
