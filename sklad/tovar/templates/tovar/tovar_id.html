@@ -20,7 +20,11 @@
         <dd class="col-sm-9">{{ tovar.color }}</dd>
 
         <dt class="col-sm-3">Количество:</dt>
-        <dd class="col-sm-9">{{ tovar.amount }}</dd>
+        <dd class="col-sm-9">
+          <button type="button" class="btn btn-danger">-</button> 
+          {{ tovar.amount }}
+          <button type="button" class="btn btn-success">+</button>
+        </dd>
 
         <dt class="col-sm-3">Номер:</dt>
         <dd class="col-sm-9">{{ tovar.number }}</dd>
@@ -33,7 +37,35 @@
 
         <dt class="col-sm-3">Сделать кнопку редактирования:</dt>
         <dd class="col-sm-9">Кнопка редактирования</dd>
-      
+
+
+        
+        <div class="col-6">
+          <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">#</th>
+                <th scope="col">Дата</th>
+                <th scope="col">Количество</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in history %}
+              <tr>
+                <th scope="row">{{ forloop.counter }}</th>
+                <td>{{ item.history_date }}</td>
+                <td>{{ item.amount }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>  
+          </table>
+        </div>
+
+
+        
+
+
+
     </dl>
 </div>
 
