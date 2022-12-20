@@ -30,7 +30,11 @@
           </a>
         </td>
         <td>{{ item.color }}</td>
-        <td>{{ item.amount }}</td>
+        <td>
+          <button type="button" class="btn btn-danger">-</button> 
+          {{ item.amount }}  
+          <button type="button" class="btn btn-success">+</button>
+        </td>
       </tr>
       {% empty %}
       <!--  Если в базе нет ни одного товара из этой категории  -->
