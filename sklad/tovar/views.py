@@ -54,8 +54,11 @@ def all_tovars(request):
 # Просмотр конкретного товара по его id
 def view_tovar(request, tovar_id):
     tovar_items = Tovar.objects.get(pk=tovar_id)
+    history = Tovar.history.filter(number=tovar_id)
     context = {
         'tovar': tovar_items,
+        'history' : history
+
     }
     return render(request, 'tovar/tovar_id.html', context)
 
