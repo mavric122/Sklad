@@ -1,5 +1,6 @@
 from django.db import models
 from django.urls import reverse
+from simple_history.models import HistoricalRecords
 
 
 class Tovar(models.Model):
@@ -10,6 +11,7 @@ class Tovar(models.Model):
     there_is = models.BooleanField(default=False, verbose_name="В наличии?")
     data_create = models.DateTimeField(auto_now=True, verbose_name='Дата первого появления')
     category = models.ForeignKey('Category', on_delete=models.PROTECT, null=True)
+    history = HistoricalRecords()
 
     # Миграция не сделана. Задел на будущее
     # comment = models.CharField(max_length=1000, verbose_name='Комментарий')
@@ -40,3 +42,4 @@ class Category(models.Model):
         verbose_name = 'Категория'
         verbose_name_plural = 'Категории'
         ordering = ['title']
+
