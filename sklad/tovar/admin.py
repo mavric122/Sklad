@@ -1,5 +1,6 @@
 from django.contrib import admin
 from .models import Tovar, Category
+from simple_history.admin import SimpleHistoryAdmin
 
 
 class TovarAdmin(admin.ModelAdmin):
@@ -16,5 +17,8 @@ class CategoryAdmin(admin.ModelAdmin):
     search_fields = ('title',)
 
 
-admin.site.register(Tovar, TovarAdmin)
-admin.site.register(Category, CategoryAdmin)
+# admin.site.register(Tovar, TovarAdmin)
+# admin.site.register(Category, CategoryAdmin)
+
+admin.site.register(Tovar, SimpleHistoryAdmin)
+admin.site.register(Category, SimpleHistoryAdmin)
