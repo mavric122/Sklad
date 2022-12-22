@@ -1,5 +1,6 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
+from django.db.models import F
 from .forms import TovarForm, CategoryForm
 
 from .models import Tovar, Category
@@ -54,20 +55,46 @@ def all_tovars(request):
 # Просмотр конкретного товара по его id
 def view_tovar(request, tovar_id):
     tovar_items = Tovar.objects.get(pk=tovar_id)
-    history = Tovar.history.filter(number=tovar_id)
+    history = Tovar.history.filter(id=tovar_id)
     context = {
         'tovar': tovar_items,
-        'history' : history
+        'history': history,
 
     }
     return render(request, 'tovar/tovar_id.html', context)
+
+# Кнопка работает, но в историю не записывает.
+# def increasecounter(request):
+#     _reponse = Tovar.objects.update(amount=F('amount') - 1)
+#     return redirect(request.META.get('HTTP_REFERER','redirect_if_referer_not_found'))
+
+
+def edit_tovar(request, tovar_id):
+    tovar_items = Tovar.objects.get(pk=tovar_id)
+    tovar_edit = get_object_or_404(Tovar, pk=tovar_id)
+    if request.method == 'GET':  # Выводим заполненую форму для последующей её изменении.
+        sample_form = Tovar.objects.get(pk=tovar_id)
+        form = TovarForm(instance=sample_form)  # форма с нужными данными из шаблона.
+    else:  # Сохраняем в базе новые значения
+        new_form = Tovar.objects.get(id=tovar_id)
+        form = TovarForm(request.POST, instance=new_form)
+        if form.is_valid():
+            form.save()
+        return redirect(tovar_edit)
+
+    content = {
+        'tovar': tovar_items,
+        'form': form,
+        'tovar_id': tovar_id
+    }
+
+    return render(request, 'tovar/edit_tovar.html', content)
 
 
 def add_category(request):
     if request.method == 'POST':  # Добавление позиции в базу
         form = CategoryForm(request.POST)
         if form.is_valid():  # Валидация формы
-            # print(f'Добавлен следующее наименование: {form.cleaned_data}')
             category = Category.objects.create(**form.cleaned_data)
             return redirect(category)
     else:
@@ -80,7 +107,6 @@ def add_tovar(request):
     if request.method == 'POST':  # Добавление позиции в базу
         form = TovarForm(request.POST)
         if form.is_valid():  # Валидация формы
-            # print(f'Добавлен следующее наименование: {form.cleaned_data}')
             tovar = Tovar.objects.create(**form.cleaned_data)
             return redirect(tovar)
     else:

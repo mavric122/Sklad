@@ -15,7 +15,6 @@ class Tovar(models.Model):
 
     # Миграция не сделана. Задел на будущее
     # comment = models.CharField(max_length=1000, verbose_name='Комментарий')
-    # History ??
 
     def get_absolute_url(self):
         return reverse('view_tovar', kwargs={'tovar_id': self.pk})
