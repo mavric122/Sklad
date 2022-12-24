@@ -9,6 +9,7 @@
     <dl class="row">
 
       <a href="{{request.META.HTTP_REFERER}}">Назад</a>
+      <a href="{% url 'spisok_category' %}" class="link-dark">К категориям!</a>
 
         <dt class="col-sm-3">Наименование: </dt>
         <dd class="col-sm-9">{{ tovar.title }}</dd>
@@ -22,11 +23,12 @@
         <dt class="col-sm-3">Количество:</dt>
         <dd class="col-sm-9">{{ tovar.amount }}</dd>
         
-
-        <div class="container-xl">
+        {% comment %}
+        <!-- <div class="container-xl"> -->
           <!-- <button onclick="window.location.href='{% url 'increase-counter' %}'"> - 1 </button> -->
           <!-- Кнопка работает, но я не понял как добавлять изменения в историю. -->
-        </div>
+        <!-- </div> -->
+        {% endcomment %}
 
         <dt class="col-sm-3">Номер:</dt>
         <dd class="col-sm-9">{{ tovar.number }}</dd>
@@ -37,12 +39,14 @@
         <dt class="col-sm-3">Дата первого появления:</dt>
         <dd class="col-sm-9">{{ tovar.data_create }}</dd>
 
+
         <div class="container-xl">
           <a href="{% url 'edit_tovar' tovar.pk %}" class="btn btn-outline-primary"  method="get">
             Отредактировать
           </a>
         </action>
         </div>
+
  
         <div class="col-6">
           <table class="table">
