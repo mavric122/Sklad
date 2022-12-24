@@ -7,7 +7,7 @@
 <div class="col-md-6">
   <h2> Изменение позиции </h2>
 
-  <form action="{% url 'edit_tovar' tovar_id=tovar_id %}" method="post">
+  <form action="{% url 'edit_tovar' pk=tovar.pk %}" method="post">
     {% csrf_token %}
     <div class="form-group">
       <label for="{{ form.title.id_for_label }}">Наименование:</label>
