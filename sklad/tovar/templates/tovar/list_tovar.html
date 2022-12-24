@@ -1,11 +1,11 @@
 {% extends 'base.html' %}
 
-{% block title %}{{ category.title }}{% endblock %}
+{% block title %}{{ title }}{% endblock %}
 
 {% block content %}
 <div class="container">
   <a href="{% url 'spisok_category' %}" class="link-dark">К категориям!</a>
-  <h1>{{ category.title }}</h1>
+  <h1>{{ title }}</h1>
 
   <table class="table">
     <thead>
@@ -13,7 +13,6 @@
         {% if tovar %}
         <!--  Если товар есть в базе, выведи таблицу  -->
         <th scope="col">#</th>
-
         <th scope="col">Наименование</th>
         <th scope="col">Цвет</th>
         <th scope="col">Количество</th>
@@ -31,22 +30,19 @@
         </td>
         <td>{{ item.color }}</td>
         <td>
-          <button type="button" class="btn btn-danger">-</button> 
           {{ item.amount }}  
-          <button type="button" class="btn btn-success">+</button>
         </td>
       </tr>
       {% empty %}
       <!--  Если в базе нет ни одного товара из этой категории  -->
       <h4>
         Пока что в этом разделе пусто.
-
         <a href="{% url 'all_tovars' %}" class="list-group-item list-group-item-action list-group-item-primary">
           Все товары
         </a>
-
       </h4>
       {% endfor %}
+      
       <a href="{% url 'add_tovar' %}">
         Добавить позицию
       </a>
