@@ -1,67 +1,88 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse
 from django.db.models import F
+from django.urls import reverse_lazy
+from django.views.generic import ListView, DetailView, CreateView
+from django.views.generic.edit import UpdateView
 from .forms import TovarForm, CategoryForm
 
 from .models import Tovar, Category
 
 
-def title_site(request):
-    return render(request, 'tovar/title.html')
+class TitleSite(ListView):
+    model = Tovar
+    template_name = 'tovar/title.html'
 
 
-def sklad(request):
-    tovar = Tovar.objects.all()
-    context = {
-        'tovar': tovar
-    }
-    return render(request, 'tovar/sklad.html', context)
+class Sklad(ListView):
+    model = Tovar
+    template_name = 'tovar/sklad.html'
 
 
-def tovar_list_category(request):
-    all_category = Category.objects.all()
-    context = {
-        'all_category': all_category,
-    }
-    return render(request, 'tovar/tovar_category.html', context)
+# Список категорий
+class ListCategory(ListView):
+    model = Category
+    template_name = 'tovar/tovar_category.html'
+    context_object_name = 'all_category'
 
 
 # Получение ссылки на категорию
-def tovar_get_category(request, category_id):
-    tovar = Tovar.objects.filter(category_id=category_id)
-    all_tovar = Tovar.objects.all()
-    all_category = Category.objects.all()
-    category = Category.objects.get(pk=category_id)
-    context = {
-        'all_category': all_category,
-        'tovar': tovar,
-        'category': category,
-        'all_tovar': all_tovar
-    }
-    return render(request, 'tovar/list_tovar.html', context)
+class GetCategory(ListView):
+    model = Tovar
+    template_name = 'tovar/list_tovar.html'
+    context_object_name = 'tovar'
+    extra_context = {'title': 'Категория'}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = Category.objects.get(pk=self.kwargs['category_id'])
+        return context
+
+    def get_queryset(self):
+        return Tovar.objects.filter(category_id=self.kwargs['category_id'])
 
 
-def all_tovars(request):
-    tovar = Tovar.objects.all()
-    all_category = Category.objects.all()
+class AllTovars(ListView):
+    model = Tovar
+    template_name = 'tovar/tovar_id.html'
+    context_object_name = 'tovar'
+    extra_context = {'title': 'Категория'}
 
-    context = {
-        'all_category': all_category,
-        'tovar': tovar
-    }
-    return render(request, 'tovar/list_tovar.html', context)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Все товары'
+        return context
 
 
 # Просмотр конкретного товара по его id
-def view_tovar(request, tovar_id):
-    tovar_items = Tovar.objects.get(pk=tovar_id)
-    history = Tovar.history.filter(id=tovar_id)
-    context = {
-        'tovar': tovar_items,
-        'history': history,
 
-    }
-    return render(request, 'tovar/tovar_id.html', context)
+class ViewTovar(DetailView):
+    model = Tovar
+    template_name = 'tovar/tovar_id.html'
+    context_object_name = 'tovar'
+    pk_url_kwarg = 'tovar_id'
+
+    # extra_context = {'title': 'Категория'}
+
+    def get_context_data(self, **kwargs, ):
+        context = super().get_context_data(**kwargs)
+        context['tovar'] = Tovar.objects.get(id=self.kwargs['tovar_id'])
+        context['history'] = Tovar.history.filter(id=self.kwargs['tovar_id'])
+        return context
+
+
+# Функциональное представление класса выше.
+
+# def view_tovar(request, tovar_id):
+#     tovar_items = Tovar.objects.get(pk=tovar_id)
+#     history = Tovar.history.filter(id=tovar_id)
+#     context = {
+#         'tovar': tovar_items,
+#         'history': history,
+#
+#     }
+#     return render(request, 'tovar/tovar_id.html', context)
+
 
 # Кнопка работает, но в историю не записывает.
 # def increasecounter(request):
@@ -69,47 +90,44 @@ def view_tovar(request, tovar_id):
 #     return redirect(request.META.get('HTTP_REFERER','redirect_if_referer_not_found'))
 
 
-def edit_tovar(request, tovar_id):
-    tovar_items = Tovar.objects.get(pk=tovar_id)
-    tovar_edit = get_object_or_404(Tovar, pk=tovar_id)
-    if request.method == 'GET':  # Выводим заполненую форму для последующей её изменении.
-        sample_form = Tovar.objects.get(pk=tovar_id)
-        form = TovarForm(instance=sample_form)  # форма с нужными данными из шаблона.
-    else:  # Сохраняем в базе новые значения
-        new_form = Tovar.objects.get(id=tovar_id)
-        form = TovarForm(request.POST, instance=new_form)
-        if form.is_valid():
-            form.save()
-        return redirect(tovar_edit)
+class UpdateTovar(UpdateView):
+    form_class = TovarForm
+    model = Tovar
+    template_name = 'tovar/edit_tovar.html'
+    pk_url_kwarg = 'pk'
 
-    content = {
-        'tovar': tovar_items,
-        'form': form,
-        'tovar_id': tovar_id
-    }
-
-    return render(request, 'tovar/edit_tovar.html', content)
+    def get_success_url(self):
+        pk = self.kwargs["pk"]
+        return reverse_lazy("view_tovar", kwargs={"tovar_id": pk})
 
 
-def add_category(request):
-    if request.method == 'POST':  # Добавление позиции в базу
-        form = CategoryForm(request.POST)
-        if form.is_valid():  # Валидация формы
-            category = Category.objects.create(**form.cleaned_data)
-            return redirect(category)
-    else:
-        form = CategoryForm()
-
-    return render(request, 'tovar/add_category.html', {'form': form})
+class AddCategory(CreateView):
+    form_class = CategoryForm
+    template_name = 'tovar/add_category.html'
 
 
-def add_tovar(request):
-    if request.method == 'POST':  # Добавление позиции в базу
-        form = TovarForm(request.POST)
-        if form.is_valid():  # Валидация формы
-            tovar = Tovar.objects.create(**form.cleaned_data)
-            return redirect(tovar)
-    else:
-        form = TovarForm()
+# def add_category(request):
+#     if request.method == 'POST':  # Добавление позиции в базу
+#         form = CategoryForm(request.POST)
+#         if form.is_valid():  # Валидация формы
+#             category = Category.objects.create(**form.cleaned_data)
+#             return redirect(category)
+#     else:
+#         form = CategoryForm()
+#
+#     return render(request, 'tovar/add_category.html', {'form': form})
 
-    return render(request, 'tovar/add_tovar.html', {'form': form})
+class AddTovar(CreateView):
+    form_class = TovarForm
+    template_name = 'tovar/add_tovar.html'
+
+# def add_tovar(request):
+#     if request.method == 'POST':  # Добавление позиции в базу
+#         form = TovarForm(request.POST)
+#         if form.is_valid():  # Валидация формы
+#             tovar = Tovar.objects.create(**form.cleaned_data)
+#             return redirect(tovar)
+#     else:
+#         form = TovarForm()
+#
+#     return render(request, 'tovar/add_tovar.html', {'form': form})
