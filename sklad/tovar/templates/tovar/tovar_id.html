@@ -39,13 +39,14 @@
         <dt class="col-sm-3">Дата первого появления:</dt>
         <dd class="col-sm-9">{{ tovar.data_create }}</dd>
 
-
+          {% if request.user.is_authenticated %}
         <div class="container-xl">
           <a href="{% url 'edit_tovar' tovar.pk %}" class="btn btn-outline-primary"  method="get">
             Отредактировать
           </a>
         </action>
         </div>
+        {% endif %}
 
  
         <div class="col-6">
