@@ -1,12 +1,84 @@
-from django.shortcuts import render, redirect, get_object_or_404
+from django.db.models import Q
 from django.http import HttpResponse
-from django.db.models import F
+from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView
 from django.views.generic.edit import UpdateView
-from .forms import TovarForm, CategoryForm
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib import messages
+from django.contrib.auth import login, logout
+from django.views import View
 
+from .forms import TovarForm, CategoryForm
+from .forms import UserRegisterForm, UserLoginForm
 from .models import Tovar, Category
+
+
+def register(request):
+    if request.method == 'POST':
+        form = UserRegisterForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, "Вы успешно зарегистрировались!")
+            return redirect('login')
+        else:
+            messages.error(request, "Ошибка регистрации")
+    else:
+        form = UserRegisterForm()
+    context = {
+        'form': form,
+    }
+    return render(request, 'tovar/register.html', context)
+
+
+def user_login(request):
+    if request.method == 'POST':
+        form = UserLoginForm(data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            messages.success(request, "Вы успешно Вошли в систему!")
+            return redirect('mavric')
+        else:
+            messages.error(request, "Ошибка введённых данных")
+    else:
+        form = UserLoginForm()
+    context = {
+        "form": form
+    }
+    return render(request, 'tovar/login.html', context)
+
+
+def user_logout(request):
+    logout(request)
+    return redirect('mavric')
+
+
+class Search(View):
+    model = Tovar
+    template_name = 'tovar/search.html'
+    http_method_names = ['get']
+
+    # def get_queryset(self):
+    #     # query = self.request.GET.get('q')
+    #
+    #     object_list = Tovar.objects.filter(
+    #         Q(title__icontains='Кровать')
+    #     )
+    #
+    #     return object_list
+
+    def get(self, request):
+        query = self.request.GET.get('q')
+        print(query)
+
+        object_list = Tovar.objects.filter(
+            Q(title__icontains=query)
+        )
+        context = {
+            'object_list': object_list
+        }
+        return render(request, 'tovar/search.html', context)
 
 
 class TitleSite(ListView):
@@ -90,7 +162,7 @@ class ViewTovar(DetailView):
 #     return redirect(request.META.get('HTTP_REFERER','redirect_if_referer_not_found'))
 
 
-class UpdateTovar(UpdateView):
+class UpdateTovar(LoginRequiredMixin, UpdateView):
     form_class = TovarForm
     model = Tovar
     template_name = 'tovar/edit_tovar.html'
@@ -101,7 +173,7 @@ class UpdateTovar(UpdateView):
         return reverse_lazy("view_tovar", kwargs={"tovar_id": pk})
 
 
-class AddCategory(CreateView):
+class AddCategory(LoginRequiredMixin, CreateView):
     form_class = CategoryForm
     template_name = 'tovar/add_category.html'
 
@@ -117,7 +189,7 @@ class AddCategory(CreateView):
 #
 #     return render(request, 'tovar/add_category.html', {'form': form})
 
-class AddTovar(CreateView):
+class AddTovar(LoginRequiredMixin, CreateView):
     form_class = TovarForm
     template_name = 'tovar/add_tovar.html'
 
