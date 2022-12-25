@@ -116,7 +116,7 @@ class GetCategory(ListView):
 
 class AllTovars(ListView):
     model = Tovar
-    template_name = 'tovar/tovar_id.html'
+    template_name = 'tovar/all_tovar.html'
     context_object_name = 'tovar'
     extra_context = {'title': 'Категория'}
 
