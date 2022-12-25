@@ -4,34 +4,31 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-light">
       <div class="container-fluid">
         <a class="navbar-brand" href="http://127.0.0.1:8000">Главная страница</a>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-          aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-          <span class="navbar-toggler-icon"></span>
-        </button>
+        {% if request.user.is_authenticated %}
+
+        Приветствую тебя, {{ user.username}} | <a href="{% url 'logout' %}">Выход</a>
+
+        {% else %}
+        <span class="navbar-text">
+          <a href="{% url 'register' %}">Регистрация</a> | <a href="{% url 'login' %}">Авторизация</a>
+        </span>
+        {% endif %}
+
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
             <li class="nav-item">
               <a class="nav-link active" aria-current="page" href="http://127.0.0.1:8000/admin">Админка</a>
             </li>
-            <li class="nav-item dropdown">
-              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown"
-                aria-expanded="false">
-                Mavric
-              </a>
-              <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
-                <li><a class="dropdown-item" href="#">Действие</a></li>
-                <li><a class="dropdown-item" href="#">Другое действие</a></li>
-                <li>
-                  <hr class="dropdown-divider">
-                </li>
-                <li><a class="dropdown-item" href="#">Ещё какое то действие</a></li>
-              </ul>
-            </li>
           </ul>
-          <form class="d-flex">
-            <input class="form-control me-2" type="search" placeholder="Search" aria-label="Search">
-            <button class="btn btn-outline-success" type="submit">Поиск</button>
-          </form>
+
+          <form action="{% url 'search' %}" class="navbar-form navbar-left" method="get">
+            <div class="input-group">
+                <input id="search" name="q" type="text" class="form-control" placeholder="Поиск...">
+                <span class="input-group-btn">
+                    <button type="submit" class="btn btn-default">Поиск</button>
+                </span>
+            </div>
+        </form>
         </div>
       </div>
     </nav>
