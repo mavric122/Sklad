@@ -30,7 +30,7 @@
         </td>
         <td>{{ item.color }}</td>
         <td>
-          {{ item.amount }}  
+          {{ item.amount }}
         </td>
       </tr>
       {% empty %}
@@ -42,10 +42,11 @@
         </a>
       </h4>
       {% endfor %}
-      
+      {% if request.user.is_authenticated %}
       <a href="{% url 'add_tovar' %}">
         Добавить позицию
       </a>
+      {% endif %}
     </tbody>
   </table>
 </div>
