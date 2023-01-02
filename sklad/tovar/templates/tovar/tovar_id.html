@@ -8,10 +8,10 @@
   
     <dl class="row">
 
-      <a href="{{request.META.HTTP_REFERER}}">Назад</a>
+      <a href="{% url 'category_id' category_id %}">В категорию {{ tovar.category }} </a>
       <a href="{% url 'spisok_category' %}" class="link-dark">К категориям!</a>
 
-        <dt class="col-sm-3">Наименование: </dt>
+        <dt class="col-sm-3">Наименовани: </dt>
         <dd class="col-sm-9">{{ tovar.title }}</dd>
 
         <dt class="col-sm-3">Категория: </dt>

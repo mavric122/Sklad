@@ -28,6 +28,8 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# CSRF_TRUSTED_ORIGINS = ["https://mavric.site"]
+
 # Application definition
 
 INSTALLED_APPS = [

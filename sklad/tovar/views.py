@@ -3,7 +3,7 @@ from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView
-from django.views.generic.edit import UpdateView
+from django.views.generic.edit import UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib import messages
 from django.contrib.auth import login, logout
@@ -58,15 +58,6 @@ class Search(View):
     model = Tovar
     template_name = 'tovar/search.html'
     http_method_names = ['get']
-
-    # def get_queryset(self):
-    #     # query = self.request.GET.get('q')
-    #
-    #     object_list = Tovar.objects.filter(
-    #         Q(title__icontains='Кровать')
-    #     )
-    #
-    #     return object_list
 
     def get(self, request):
         query = self.request.GET.get('q')
@@ -134,12 +125,11 @@ class ViewTovar(DetailView):
     context_object_name = 'tovar'
     pk_url_kwarg = 'tovar_id'
 
-    # extra_context = {'title': 'Категория'}
-
     def get_context_data(self, **kwargs, ):
         context = super().get_context_data(**kwargs)
         context['tovar'] = Tovar.objects.get(id=self.kwargs['tovar_id'])
         context['history'] = Tovar.history.filter(id=self.kwargs['tovar_id'])
+        # context['category_id'] = Tovar.objects.get(category_id=self.kwargs['category_id'])
         return context
 
 
@@ -171,6 +161,25 @@ class UpdateTovar(LoginRequiredMixin, UpdateView):
     def get_success_url(self):
         pk = self.kwargs["pk"]
         return reverse_lazy("view_tovar", kwargs={"tovar_id": pk})
+
+
+class TovarDelete(DeleteView):
+    model = Tovar
+    template_name = 'tovar/delete_tovar.html'
+    context_object_name = 'tovar'
+    success_url = reverse_lazy('mavric')
+
+
+class DeleteCategory(DeleteView):
+    model = Category
+    template_name = 'tovar/delete_category.html'
+    context_object_name = 'category'
+    success_url = reverse_lazy('mavric')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['category'] = Category.objects.get(pk=self.kwargs['pk'])
+        return context
 
 
 class AddCategory(LoginRequiredMixin, CreateView):
