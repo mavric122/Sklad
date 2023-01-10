@@ -5,13 +5,14 @@ from simple_history.models import HistoricalRecords
 
 class Tovar(models.Model):
     title = models.CharField(max_length=100, verbose_name='Наименование')
-    color = models.CharField(max_length=50, verbose_name='Цвет')
+    color = models.ForeignKey('Color', on_delete=models.PROTECT, null=True)
     amount = models.IntegerField(default=0, verbose_name='Количество')
     number = models.IntegerField(default=False, verbose_name='Номер')
     there_is = models.BooleanField(default=False, verbose_name="В наличии?")
     data_create = models.DateTimeField(auto_now=True, verbose_name='Дата первого появления')
     category = models.ForeignKey('Category', on_delete=models.PROTECT, null=True)
     history = HistoricalRecords()
+    # history = HistoricalRecords(excluded_fields=['title', 'color', 'number', 'there_is', 'data_create', 'category'])
 
     # Миграция не сделана. Задел на будущее
     # comment = models.CharField(max_length=1000, verbose_name='Комментарий')
@@ -42,3 +43,17 @@ class Category(models.Model):
         verbose_name_plural = 'Категории'
         ordering = ['title']
 
+
+class Color(models.Model):
+    title = models.CharField(max_length=50, db_index=True, verbose_name='Категории')
+
+    def get_absolute_url(self):
+        return reverse('color_id', kwargs={'color_id': self.pk})
+
+    def __str__(self):
+        return self.title
+
+    class Meta:
+        verbose_name = 'Цвет'
+        verbose_name_plural = 'Цвета'
+        ordering = ['title']

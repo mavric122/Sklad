@@ -1,7 +1,8 @@
-from django.db.models import Q
+from django.db.models import Q, F
 from django.http import HttpResponse
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView, DetailView, CreateView
 from django.views.generic.edit import UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -9,9 +10,9 @@ from django.contrib import messages
 from django.contrib.auth import login, logout
 from django.views import View
 
-from .forms import TovarForm, CategoryForm
+from .forms import TovarForm, CategoryForm, ColorForm
 from .forms import UserRegisterForm, UserLoginForm
-from .models import Tovar, Category
+from .models import Tovar, Category, Color
 
 
 def register(request):
@@ -125,11 +126,26 @@ class ViewTovar(DetailView):
     context_object_name = 'tovar'
     pk_url_kwarg = 'tovar_id'
 
+    def get_success_url(self):
+        tovar_id = self.kwargs["pk"]
+        return reverse_lazy("view_tovar", kwargs={"tovar_id": tovar_id})
+
     def get_context_data(self, **kwargs, ):
         context = super().get_context_data(**kwargs)
         context['tovar'] = Tovar.objects.get(id=self.kwargs['tovar_id'])
         context['history'] = Tovar.history.filter(id=self.kwargs['tovar_id'])
-        # context['category_id'] = Tovar.objects.get(category_id=self.kwargs['category_id'])
+
+        # Если товара 0 то его нет в наличии и наоборот.
+        obj = Tovar.objects.get(pk=self.kwargs['tovar_id'])
+        if obj.amount <= 0:
+            if obj.there_is:
+                obj.there_is = False
+                obj.save()
+        if obj.amount >= 1:
+            if not obj.there_is:
+                obj.there_is = True
+                obj.save()
+
         return context
 
 
@@ -147,20 +163,12 @@ class ViewTovar(DetailView):
 
 
 # Кнопка работает, но в историю не записывает.
-# def increasecounter(request):
-#     _reponse = Tovar.objects.update(amount=F('amount') - 1)
-#     return redirect(request.META.get('HTTP_REFERER','redirect_if_referer_not_found'))
 
 
 class UpdateTovar(LoginRequiredMixin, UpdateView):
     form_class = TovarForm
     model = Tovar
     template_name = 'tovar/edit_tovar.html'
-    pk_url_kwarg = 'pk'
-
-    def get_success_url(self):
-        pk = self.kwargs["pk"]
-        return reverse_lazy("view_tovar", kwargs={"tovar_id": pk})
 
 
 class TovarDelete(DeleteView):
@@ -201,6 +209,8 @@ class AddCategory(LoginRequiredMixin, CreateView):
 class AddTovar(LoginRequiredMixin, CreateView):
     form_class = TovarForm
     template_name = 'tovar/add_tovar.html'
+    reverse_lazy = 'view_tovar'
+
 
 # def add_tovar(request):
 #     if request.method == 'POST':  # Добавление позиции в базу
@@ -212,3 +222,42 @@ class AddTovar(LoginRequiredMixin, CreateView):
 #         form = TovarForm()
 #
 #     return render(request, 'tovar/add_tovar.html', {'form': form})
+
+
+class ListColor(LoginRequiredMixin, ListView):
+    model = Color
+    template_name = 'tovar/list_color.html'
+    context_object_name = 'all_color'
+
+
+class AddColor(LoginRequiredMixin, CreateView):
+    form_class = ColorForm
+    template_name = 'tovar/add_color.html'
+    reverse_lazy = 'list_color'
+
+
+class GetColor(ListView):
+    model = Color
+    template_name = 'tovar/color_id.html'
+    context_object_name = 'color'
+    extra_context = {'title': 'Цвет'}
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = Color.objects.get(pk=self.kwargs['color_id'])
+        return context
+
+    def get_queryset(self):
+        return Tovar.objects.filter(color_id=self.kwargs['color_id'])
+
+
+class DeleteColor(DeleteView):
+    model = Color
+    template_name = 'tovar/delete_color.html'
+    context_object_name = 'color'
+    success_url = reverse_lazy('list_color')
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['color'] = Color.objects.get(pk=self.kwargs['pk'])
+        return context

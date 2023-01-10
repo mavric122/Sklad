@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib.auth.models import User
-from .models import Category, Tovar
+from .models import Category, Tovar, Color
 
 
 # Старая форма основанная не на модели, оставлена для примера.
@@ -37,7 +37,7 @@ class TovarForm(forms.ModelForm):
         fields = ['title', 'color', 'amount', 'number', 'there_is', 'category']  # Какие поля нужны из модели.
         widgets = {  # Внимание!!! В виджетах используются не аргумент для поля, а аргумент для виджета.
             'title': forms.TextInput(attrs={"class": "form-control"}),
-            'color': forms.TextInput(attrs={"class": "form-control"}),
+            'color': forms.Select(attrs={"class": "form-control"}),
             'amount': forms.NumberInput(attrs={"class": "form-control"}),
             'number': forms.NumberInput(attrs={"class": "form-control"}),
             'there_is': forms.CheckboxInput(attrs={"class": "form-check-input"}),
@@ -48,6 +48,15 @@ class TovarForm(forms.ModelForm):
 class CategoryForm(forms.ModelForm):
     class Meta:
         model = Category
+        fields = '__all__'
+        widgets = {  # Внимание!!! В виджетах используются не аргумент для поля, а аргумент для виджета.
+            'title': forms.TextInput(attrs={"class": "form-control"})
+        }
+
+
+class ColorForm(forms.ModelForm):
+    class Meta:
+        model = Color
         fields = '__all__'
         widgets = {  # Внимание!!! В виджетах используются не аргумент для поля, а аргумент для виджета.
             'title': forms.TextInput(attrs={"class": "form-control"})

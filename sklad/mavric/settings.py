@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'simple_history',
     'debug_toolbar',
     'tovar.apps.TovarConfig',
+    'parsing_market.apps.ParsingMarketConfig',
 ]
 
 MIDDLEWARE = [

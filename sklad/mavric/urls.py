@@ -6,4 +6,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', TitleSite.as_view()),
     path('sklad/', include('tovar.urls')),
+    path('parsing_market/', include('parsing_market.urls')),
 ]

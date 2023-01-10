@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Tovar, Category
+from .models import Tovar, Category, Color
 from simple_history.admin import SimpleHistoryAdmin
 
 
@@ -17,8 +17,15 @@ class CategoryAdmin(admin.ModelAdmin):
     search_fields = ('title',)
 
 
+class ColorAdmin(admin.ModelAdmin):
+    list_display = ('id', 'title')
+    list_display_links = ('id', 'title')
+    search_fields = ('title',)
+
+
 # admin.site.register(Tovar, TovarAdmin)
 # admin.site.register(Category, CategoryAdmin)
 
-admin.site.register(Tovar, SimpleHistoryAdmin)
-admin.site.register(Category, SimpleHistoryAdmin)
+admin.site.register(Tovar, TovarAdmin)
+admin.site.register(Category, CategoryAdmin)
+admin.site.register(Color, ColorAdmin)

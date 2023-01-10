@@ -16,6 +16,10 @@ urlpatterns = [
     path('tovar/add_tovar', AddTovar.as_view(), name='add_tovar'),
     path('tovar/edit_tovar/id/<int:pk>', UpdateTovar.as_view(), name='edit_tovar'),
     path('tovar/tovar_delete/id/<int:pk>', TovarDelete.as_view(), name='tovar_delete'),
+    path('color/', ListColor.as_view(), name='list_color'),
+    path('color/add_color', AddColor.as_view(), name='add_color'),
+    path('color/<int:color_id>/', GetColor.as_view(), name='color_id'),
+    path('color/delete_color/<int:pk>/', DeleteColor.as_view(), name='delete_color'),
     path('__debug__/', include('debug_toolbar.urls')),
-    # path('increase_counter/', increasecounter, name='increase-counter')
+    # path('tovar/id/<int:tovar_id>/increase_counter/', ViewTovar.IncreaseCounter, name='Increase-Counter')
 ]
