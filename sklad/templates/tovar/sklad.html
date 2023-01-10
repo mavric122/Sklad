@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}Склад v.0.1.{% endblock %}
+
+{% block content %}
+    {% if user.is_authenticated %}
+        <!-- Контейнер основной страницы   -->
+        
+        <div class="container">
+        
+            <h3> Добро пожаловать в приложение Склад v.0.1. </h3>
+          
+            <div class="btn-group">
+              <a href="{% url 'spisok_category' %}" class="btn btn-primary active" aria-current="page">Категории</a>
+          
+            </div>
+            </br>
+            </br>
+
+            <div class="btn-group">
+              <a href="{% url 'all_tovars' %}" class="btn btn-primary active" aria-current="page">Все товары</a>
+          
+            </div>
+
+          </br>
+          </br>
+
+            <div class="btn-group">
+              <a href="{% url 'list_color' %}" class="btn btn-primary active" aria-current="page">Цвета</a>
+          
+            </div>
+          
+          </div>
+        
+        <!-- Конец контейнера основной страницы  -->
+    {% endif %}
+{% endblock %}
+
+
+

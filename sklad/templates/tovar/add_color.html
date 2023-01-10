@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}Добавить категорию{% endblock %}
+
+{% block content %}
+    {% if user.is_authenticated %}
+        <!-- Контейнер основной страницы   -->
+        <div class="col-md-8">
+            <h2> Добавление цвета </h2>
+        
+            <form action="{% url 'add_color' %}" method="post">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="{{ form.title.id_for_label }}">Наименование:</label>
+                    {{ form.title }}
+                    <div class="invalid-feedback">
+                        {{ form.title.errors }}
+                    </div>
+                </div>
+        
+                <br>
+                <button type="submit" class="btn btn-primary btn-block">Добавить цвет</button>
+        
+            </form>
+        </div>
+        <!-- Конец контейнера основной страницы  -->
+    {% endif %}
+{% endblock %}

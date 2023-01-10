@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% load news_tags %}
+
+{% block title %}{{ tovar.title }}{% endblock %}
+
+{% block content %}
+    {% if user.is_authenticated %}
+        
+        <div class="container-xl">
+          
+            <dl class="row">
+        
+              <a href="{% url 'category_id' tovar.category_id  %}">В категорию {{ tovar.category }} </a>
+              <a href="{% url 'spisok_category' %}" class="link-dark">К категориям!</a>
+        
+                <dt class="col-sm-3">Наименование: </dt>
+                <dd class="col-sm-9">{{ tovar.title }}</dd>
+        
+                <dt class="col-sm-3">Категория: </dt>
+                <dd class="col-sm-9">{{ tovar.category }}</dd>
+              
+                <dt class="col-sm-3">Цвет:</dt>
+                <dd class="col-sm-9">{{ tovar.color }}</dd>
+        
+                <dt class="col-sm-3">Количество:</dt>
+                <dd class="col-sm-9">{{ tovar.amount }}</dd>
+                
+                {% comment %}
+                <!-- <div class="container-xl"> 
+                  <button onclick="window.location.href='{% url 'increase-counter' %}'"> - 1 </button>
+                  Кнопка работает, но я не понял как добавлять изменения в историю.
+                </div> -->
+                {% endcomment %}
+        
+                <dt class="col-sm-3">Номер:</dt>
+                <dd class="col-sm-9">{{ tovar.number }}</dd>
+        
+                <dt class="col-sm-3">В наличии?:</dt>
+                <dd class="col-sm-9">{{ tovar.there_is|yesno:"Да,Нет" }}</dd>
+                
+                <dt class="col-sm-3">Дата первого появления:</dt>
+                <dd class="col-sm-9">{{ tovar.data_create }}</dd>
+        
+                  {% if request.user.is_authenticated %}
+                <div class="container-xl">
+                  <a href="{% url 'edit_tovar' tovar.pk %}" class="btn btn-outline-primary"  method="get">
+                    Отредактировать
+                  </a>
+                </action>
+                </div>
+                {% endif %}
+        
+         
+                <div class="col-6">
+                  <table class="table">
+                    <thead>
+                      <tr>
+                        <th scope="col">Дата</th>
+                        <th scope="col">Количество</th>
+                        <th scope="col">Изменение</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+
+                      {% for item in history %} 
+                          {% ifchanged item.amount %}
+                            <td>{{ item.history_date }}</td>
+                            <td>{{ item.amount }}</td>
+                          {% endifchanged %}
+                      </tr>
+                      {% endfor %}
+                      
+                    </tbody>  
+                  </table>
+                </div>
+                <div class="container-xl">
+                  <a href="{% url 'tovar_delete' tovar.pk %}" class="btn btn-outline-primary"  method="get">
+                    Удалить товар
+                  </a>
+                </action>
+                </div>
+
+                {% raznica %}
+            </dl>
+        </div>
+    {% endif %}
+
+
+{% endblock %}

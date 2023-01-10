@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+ 
+{% block content %}
+    {% if user.is_authenticated %}
+        <h1>Удаляем категорию?</h1>
+        <form action="" method="post">{% csrf_token %}
+          <p>Вы уверены что хотите удалить категорию "{{ category.title }}"?</p>
+          <input type="submit" value="Подтвердить" />
+        </form>
+    {% endif %}
+{% endblock content %}

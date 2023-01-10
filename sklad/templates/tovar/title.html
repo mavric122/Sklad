@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block title %}Главная страница{% endblock %}
+
+{% block content %}
+    {% if user.is_authenticated %}
+        <!-- Контейнер основной страницы   -->
+        <div class="container">
+        
+          <h3> Список доступных приложений </h3>
+        
+          <div class="btn-group">
+            <a href="{% url 'mavric' %}" class="btn btn-primary active" aria-current="page">Склад v.0.1.</a>
+        
+          </div>
+
+        </br>
+        </br>
+
+          <div class="btn-group">
+            <a href="{% url 'parsing_market' %}" class="btn btn-primary active" aria-current="page">Parsing Market</a>
+        
+          </div>
+        
+        </div>
+        <!-- Конец контейнера основной страницы  -->
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ Поиск }}{% endblock %}
+
+{% block content %}
+<div class="container">
+    <a href="{% url 'spisok_category' %}" class="link-dark">К категориям!</a>
+    <h1>{{ Поиск }}</h1>
+
+    <table class="table">
+        <thead>
+                {% if tovar %}
+                <!--  Если товар есть в базе, выведи таблицу  -->
+                <th scope="col">#</th>
+                <th scope="col">Наименование</th>
+                <th scope="col">Цвет</th>
+                <th scope="col">Количество</th>
+            </tr>
+            {% endif %}
+        </thead>
+        <tbody>
+            {% for item in object_list %}
+            <tr>
+                <th scope="row">{{forloop.counter}}</th>
+                <td>
+                    <a href="{{ item.get_absolute_url }}">
+                        {{ item.title }}
+                    </a>
+                </td>
+                <td>{{ item.color }}</td>
+                <td>
+                    {{ item.amount }}
+                </td>
+            </tr>
+            {% empty %}
+            <!--  Если в базе нет ни одного товара из этой категории  -->
+            <h4>
+                Ничего не найдено
+                <a href="{% url 'all_tovars' %}" class="list-group-item list-group-item-action list-group-item-primary">
+                    Все товары
+                </a>
+            </h4>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}

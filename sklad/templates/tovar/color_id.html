@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ title }}{% endblock %}
+
+{% block content %}
+    {% if user.is_authenticated %}
+
+    <a href="{% url 'list_color' %}" class="link-dark">К цветам!</a>
+
+
+    <dt class="col-sm-3">Цвет:</dt>
+    <dd class="col-sm-9">{{title}}</dd>
+    
+
+<div class="container-xl">
+    <a href="{% url 'delete_color' title.pk %}" class="btn btn-outline-primary"  method="get">
+      Удалить цвет
+    </a>
+  </action>
+  </div>
+
+  {% endif %}
+  {% endblock %}

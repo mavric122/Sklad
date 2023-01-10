@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+
+{% block title %}Список цветов{% endblock %}
+
+{% block content %}
+<!-- Контейнер основной страницы   -->
+<div class="container">
+
+    <h1>Список цветов:</h1>
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="list-group">
+                {% for item in all_color %}
+                <a href="{{ item.get_absolute_url }}"
+                    class="list-group-item list-group-item-action list-group-item-primary">
+                    {{ item.title }}
+                </a>
+                {% endfor %}
+
+                {% if request.user.is_authenticated %}
+                <a href="{% url 'add_color' %}" class="list-group-item list-group-item-action list-group-item-info">
+                    Добавить Цвет
+                </a>
+                {% endif %}
+            </div>
+            </a>
+        </div>
+    </div>
+</div>
+<!-- Конец контейнера основной страницы  -->
+{% endblock %}

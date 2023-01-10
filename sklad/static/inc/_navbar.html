@@ -1,0 +1,38 @@
+<div class="container">
+  <!-- Контейнер верхнего навбара  -->
+  <div class="container">
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="http://mavric.site/">Главная страница</a>
+        {% if request.user.is_authenticated %}
+
+        Приветствую тебя, {{ user.username}} | <a href="{% url 'logout' %}">Выход</a>
+
+        {% else %}
+        <span class="navbar-text">
+          <a href="{% url 'register' %}">Регистрация</a> | <a href="{% url 'login' %}">Авторизация</a>
+        </span>
+        {% endif %}
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+            <li class="nav-item">
+              <a class="nav-link active" aria-current="page" href="http://mavric.site/admin">Админка</a>
+            </li>
+          </ul>
+
+          <form action="{% url 'search' %}" class="navbar-form navbar-left" method="get">
+            <div class="input-group">
+                <input id="search" name="q" type="text" class="form-control" placeholder="Поиск...">
+                <span class="input-group-btn">
+                    <button type="submit" class="btn btn-default">Поиск</button>
+                </span>
+            </div>
+        </form>
+        </div>
+      </div>
+    </nav>
+  </div>
+</div>
+
+<!-- Конец контейнер верхнего хотбара  -->

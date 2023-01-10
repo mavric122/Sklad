@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}Добавить товар{% endblock %}
+
+{% block content %}
+<!-- Контейнер основной страницы   -->
+{% if request.user.is_authenticated %}
+<div class="col-md-8">
+  <h2> Добавление позиции </h2>
+  <form action="{% url 'add_tovar' %}" method="post">
+    {% csrf_token %}
+    <div class="form-group">
+      <label for="{{ form.title.id_for_label }}">Наименование:</label>
+      {{ form.title }}
+      <div class="invalid-feedback">
+        {{ form.title.errors }}
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="{{ form.color.id_for_label }}">Цвет:</label>
+      {{ form.color }}
+      <div class="invalid-feedback">
+        {{ form.color.errors }}
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="{{ form.amount.id_for_label }}">Количество:</label>
+      {{ form.amount }}
+      <div class="invalid-feedback">
+        {{ form.amount.errors }}
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="{{ form.number.id_for_label }}">Номер:</label>
+      {{ form.number }}
+      <div class="invalid-feedback">
+        {{ form.number.errors }}
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="{{ form.category.id_for_label }}">Категория:</label>
+      {{ form.category }}
+      <div class="invalid-feedback">
+        {{ form.category.errors }}
+      </div>
+    </div>
+
+    <br>
+    <div class="form-group">
+      <label for="{{ form.there_is.id_for_label }}">В наличии?:</label>
+      {{ form.there_is }}
+      <div class="invalid-feedback">
+        {{ form.there_is.errors }}
+      </div>
+    </div>
+    <br>
+
+    <br>
+    <button type="submit" class="btn btn-primary btn-block">Добавить товар</button>
+  </form>
+</div>
+{% endif %}
+<!-- Конец контейнера основной страницы  -->
+{% endblock %}

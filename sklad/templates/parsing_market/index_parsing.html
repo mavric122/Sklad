@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block title %}Парсинг{% endblock %}
+
+{% block content %}
+    {% if user.is_authenticated %}
+        <!-- Контейнер основной страницы   -->
+        <div class="container">
+        
+          <h3> Список доступных приложений </h3>
+        
+          <div class="btn-group">
+            <a href="{% url 'ozon_title' %}" class="btn btn-primary active" aria-current="page">OZON</a>
+          </div>
+
+          <br>
+          <br>
+
+          <div class="btn-group">
+            <a href="{% url 'test' %}" class="btn btn-primary active" aria-current="page">TEST</a>
+          </div>
+        
+        </div>
+        <!-- Конец контейнера основной страницы  -->
+    {% endif %}
+{% endblock %}

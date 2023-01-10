@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block title %}OZON{% endblock %}
+
+{% block content %}
+    {% if user.is_authenticated %}
+        <!-- Контейнер основной страницы   -->
+        <div class="container">
+          <h3> WB </h3>
+        </div>
+        <!-- Конец контейнера основной страницы  -->
+    {% endif %}
+{% endblock %}
