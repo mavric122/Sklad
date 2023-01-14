@@ -1,5 +1,5 @@
 from django.db.models import Q, F
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.decorators.csrf import csrf_exempt
@@ -20,7 +20,8 @@ def register(request):
         form = UserRegisterForm(request.POST)
         if form.is_valid():
             form.save()
-            messages.success(request, "Вы успешно зарегистрировались!")
+            messages.success(request,
+                             "Вы успешно зарегистрировались!")
             return redirect('login')
         else:
             messages.error(request, "Ошибка регистрации")
@@ -99,11 +100,13 @@ class GetCategory(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = Category.objects.get(pk=self.kwargs['category_id'])
+        context['title'] = Category.objects.get(
+            pk=self.kwargs['category_id'])
         return context
 
     def get_queryset(self):
-        return Tovar.objects.filter(category_id=self.kwargs['category_id'])
+        return Tovar.objects.filter(
+            category_id=self.kwargs['category_id'])
 
 
 class AllTovars(ListView):
@@ -134,17 +137,14 @@ class ViewTovar(DetailView):
         context = super().get_context_data(**kwargs)
         context['tovar'] = Tovar.objects.get(id=self.kwargs['tovar_id'])
         context['history'] = Tovar.history.filter(id=self.kwargs['tovar_id'])
-
-        # Если товара 0 то его нет в наличии и наоборот.
         obj = Tovar.objects.get(pk=self.kwargs['tovar_id'])
-        if obj.amount <= 0:
-            if obj.there_is:
-                obj.there_is = False
-                obj.save()
-        if obj.amount >= 1:
-            if not obj.there_is:
-                obj.there_is = True
-                obj.save()
+        his = Tovar.history.get(pk=self.kwargs['tovar_id'])
+        print(his.history_id)
+
+        # his = Tovar.history.get(history_id=self.kwargs['tovar_id'])
+        # his.raznica = obj.amount + 1
+        # his.save()
+        # print(his.raznica)
 
         return context
 
@@ -170,6 +170,22 @@ class UpdateTovar(LoginRequiredMixin, UpdateView):
     model = Tovar
     template_name = 'tovar/edit_tovar.html'
 
+    def post(self, request, **kwargs):
+        # Возвращает копию объекта, используя copy.deepcopy() из стандартной библиотеки Python.
+        # Эта копия будет изменяемой, даже если оригинал таковым не являлся.
+        request.POST = request.POST.copy()
+        if request.POST['amount'] != '0':
+            request.POST['there_is'] = "True"
+        else:
+            request.POST['there_is'] = "False"
+        # if request.POST['raznica'] == '0':
+        #     print('0')
+        #     # request.POST['raznica'] = '1'
+
+
+
+        return super(UpdateView, self).post(request, **kwargs)
+
 
 class TovarDelete(DeleteView):
     model = Tovar
@@ -186,7 +202,8 @@ class DeleteCategory(DeleteView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['category'] = Category.objects.get(pk=self.kwargs['pk'])
+        context['category'] = Category.objects.get(
+            pk=self.kwargs['pk'])
         return context
 
 
@@ -244,7 +261,8 @@ class GetColor(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['title'] = Color.objects.get(pk=self.kwargs['color_id'])
+        context['title'] = Color.objects.get(
+            pk=self.kwargs['color_id'])
         return context
 
     def get_queryset(self):
