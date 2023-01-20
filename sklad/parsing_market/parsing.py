@@ -1,12 +1,12 @@
 import requests
 
-search = 'oppo+a96'
+search = 'oppo%20a96'
 
 headers = {
     "User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/106.0.0.0 YaBrowser/22.11.3.838 Yowser/2.5 Safari/537.36"
 }
 params = {
-    "sort": "popular",
+    # "sort": "popular",
     "search": search
 }
 

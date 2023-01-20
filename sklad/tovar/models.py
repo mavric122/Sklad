@@ -12,10 +12,8 @@ class Tovar(models.Model):
     data_create = models.DateTimeField(auto_now=True, verbose_name='Дата первого появления')
     category = models.ForeignKey('Category', on_delete=models.PROTECT, null=True)
     history = HistoricalRecords()
-    # history = HistoricalRecords(excluded_fields=['title', 'color', 'number', 'there_is', 'data_create', 'category'])
-
-    # Миграция не сделана. Задел на будущее
-    # comment = models.CharField(max_length=1000, verbose_name='Комментарий')
+    comment = models.TextField(max_length=1000, verbose_name='Комментарий', default=" ")
+    raznica = models.IntegerField(default=0, verbose_name='Разница')
 
     def get_absolute_url(self):
         return reverse('view_tovar', kwargs={'tovar_id': self.pk})
@@ -27,6 +25,14 @@ class Tovar(models.Model):
         verbose_name = 'Товар'
         verbose_name_plural = 'Товары'
         ordering = ['title']
+
+    def save_without_historical_record(self, *args, **kwargs):
+        self.skip_history_when_saving = True
+        try:
+            ret = self.save(*args, **kwargs)
+        finally:
+            del self.skip_history_when_saving
+        return ret
 
 
 class Category(models.Model):

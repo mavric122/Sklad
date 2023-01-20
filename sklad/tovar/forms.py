@@ -34,14 +34,21 @@ from .models import Category, Tovar, Color
 class TovarForm(forms.ModelForm):
     class Meta:
         model = Tovar  # С какой моделью будет связана форма
-        fields = ['title', 'color', 'amount', 'number', 'there_is', 'category']  # Какие поля нужны из модели.
-        widgets = {  # Внимание!!! В виджетах используются не аргумент для поля, а аргумент для виджета.
+        fields = ['title', 'color', 'amount', 'number', 'there_is', 'category', 'comment',
+                  'raznica']  # Какие поля нужны из модели.
+        widgets = {
+            # Внимание!!! В виджетах используются не аргумент для поля, а аргумент для виджета.
             'title': forms.TextInput(attrs={"class": "form-control"}),
             'color': forms.Select(attrs={"class": "form-control"}),
             'amount': forms.NumberInput(attrs={"class": "form-control"}),
             'number': forms.NumberInput(attrs={"class": "form-control"}),
             'there_is': forms.CheckboxInput(attrs={"class": "form-check-input"}),
             'category': forms.Select(attrs={"class": "form-control"}),
+            'comment': forms.Textarea(attrs={
+                "class": "form-control",
+                "rows": 7,
+            }),
+            'raznica': forms.HiddenInput(),
         }
 
 
@@ -49,7 +56,8 @@ class CategoryForm(forms.ModelForm):
     class Meta:
         model = Category
         fields = '__all__'
-        widgets = {  # Внимание!!! В виджетах используются не аргумент для поля, а аргумент для виджета.
+        widgets = {
+            # Внимание!!! В виджетах используются не аргумент для поля, а аргумент для виджета.
             'title': forms.TextInput(attrs={"class": "form-control"})
         }
 
@@ -58,7 +66,8 @@ class ColorForm(forms.ModelForm):
     class Meta:
         model = Color
         fields = '__all__'
-        widgets = {  # Внимание!!! В виджетах используются не аргумент для поля, а аргумент для виджета.
+        widgets = {
+            # Внимание!!! В виджетах используются не аргумент для поля, а аргумент для виджета.
             'title': forms.TextInput(attrs={"class": "form-control"})
         }
 
@@ -69,9 +78,11 @@ class UserRegisterForm(UserCreationForm):
     email = forms.EmailField(max_length='50', label='Пароль',
                              widget=forms.EmailInput(attrs={"class": "form-control"}))
     password1 = forms.CharField(max_length='50', label='Пароль',
-                                widget=forms.PasswordInput(attrs={"class": "form-control"}))
+                                widget=forms.PasswordInput(
+                                    attrs={"class": "form-control"}))
     password2 = forms.CharField(max_length='50', label='Пароль 2',
-                                widget=forms.PasswordInput(attrs={"class": "form-control"}))
+                                widget=forms.PasswordInput(
+                                    attrs={"class": "form-control"}))
 
     class Meta:
         model = User

@@ -49,6 +49,22 @@
       </div>
     </div>
 
+    <div class="form-group" rows="3">
+      <label for="{{ form.comment.id_for_label }}">Комментарий:</label>
+      {{ form.comment }}
+      <div class="invalid-feedback">
+        {{ form.comment.errors }}
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label for="{{ form.raznica.id_for_label }}"></label>
+      {{ form.raznica }}
+      <div class="invalid-feedback">
+        {{ form.raznica.errors }}
+      </div>
+    </div>
+
     <br>
     <div class="form-group">
       <label for="{{ form.there_is.id_for_label }}">В наличии?:</label>

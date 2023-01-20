@@ -13,23 +13,13 @@ def get_category():
 
 
 @register.simple_tag()
-def raznica():
-    histor = Tovar.history.filter(id=1)
+def raznica(filter=None):
+    histor = Tovar.history.filter(id=filter)
     my_list = []
     for item in histor:
-        s = item.amount
-        my_list.append(s)
-
-    print(my_list)
-
-    list_of_unique_numbers = []
-    unique_numbers = set(my_list)
-
-    for number in unique_numbers:
-        list_of_unique_numbers.append(number)
-    print(list_of_unique_numbers)
-
-    return list_of_unique_numbers
+        Tovar.history.raznica = item
+        print(Tovar.history.raznica)
+    return histor.s
 
 
 

@@ -137,15 +137,6 @@ class ViewTovar(DetailView):
         context = super().get_context_data(**kwargs)
         context['tovar'] = Tovar.objects.get(id=self.kwargs['tovar_id'])
         context['history'] = Tovar.history.filter(id=self.kwargs['tovar_id'])
-        obj = Tovar.objects.get(pk=self.kwargs['tovar_id'])
-        his = Tovar.history.get(pk=self.kwargs['tovar_id'])
-        print(his.history_id)
-
-        # his = Tovar.history.get(history_id=self.kwargs['tovar_id'])
-        # his.raznica = obj.amount + 1
-        # his.save()
-        # print(his.raznica)
-
         return context
 
 
@@ -170,6 +161,7 @@ class UpdateTovar(LoginRequiredMixin, UpdateView):
     model = Tovar
     template_name = 'tovar/edit_tovar.html'
 
+
     def post(self, request, **kwargs):
         # Возвращает копию объекта, используя copy.deepcopy() из стандартной библиотеки Python.
         # Эта копия будет изменяемой, даже если оригинал таковым не являлся.
@@ -178,10 +170,28 @@ class UpdateTovar(LoginRequiredMixin, UpdateView):
             request.POST['there_is'] = "True"
         else:
             request.POST['there_is'] = "False"
-        # if request.POST['raznica'] == '0':
-        #     print('0')
-        #     # request.POST['raznica'] = '1'
 
+        tovar = Tovar.objects.get(title=request.POST['title'])
+        # Получаем количество товара до изменения
+        amount_tovar = tovar.amount
+        # Сравниваем количество товара до и после отправки формы и получаем разницу.
+        if int(amount_tovar) < int(request.POST['amount']):
+            request.POST['raznica'] = int(request.POST['amount']) - amount_tovar
+        elif int(amount_tovar) > int(request.POST['amount']):
+            request.POST['raznica'] = int(request.POST['amount']) - amount_tovar
+            # Тут если изменение происходит не по номеру, история не меняется.
+        else:
+            if request.POST['comment'] != tovar.comment:
+                request.POST['raznica'] = tovar.raznica
+            else:
+                request.POST['raznica'] = tovar.raznica
+
+        # # new_tovar = Tovar.objects.get(title=request.POST['title'])
+        # # new_amount_tovar = amount_tovar.amount
+        # if int(amount_tovar) < int(request.POST['amount']):
+        #     tovar.raznica = str(int(request.POST['amount']) - int(amount_tovar))
+        #     tovar.save()
+        #     print(tovar.raznica)
 
 
         return super(UpdateView, self).post(request, **kwargs)

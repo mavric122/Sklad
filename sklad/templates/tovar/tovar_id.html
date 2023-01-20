@@ -40,6 +40,11 @@
                 
                 <dt class="col-sm-3">Дата первого появления:</dt>
                 <dd class="col-sm-9">{{ tovar.data_create }}</dd>
+
+                
+
+                <dt class="col-sm-3">Комментарий:</dt>
+                <p class="text-justify">{{ tovar.comment }}</p>
         
                   {% if request.user.is_authenticated %}
                 <div class="container-xl">
@@ -56,15 +61,20 @@
                     <thead>
                       <tr>
                         <th scope="col">Дата</th>
-                        <th scope="col">Количество</th>
                         <th scope="col">Изменение</th>
+                        <th scope="col">Количество</th>
                       </tr>
                     </thead>
                     <tbody>
 
                       {% for item in history %} 
-                          {% ifchanged item.amount %}
+                          {% ifchanged item.amount  %}
                             <td>{{ item.history_date }}</td>
+                            {% if item.raznica == 0 %}
+                              <td>Без изменений</td>
+                              {% else %}
+                            <td>{% if item.raznica > 0 %}+{% endif %}{{ item.raznica }}</td>{% endif %}
+                            
                             <td>{{ item.amount }}</td>
                           {% endifchanged %}
                       </tr>
@@ -80,10 +90,22 @@
                 </action>
                 </div>
 
-                {% raznica %}
+                {% comment %}
+                {% raznica  filter=tovar.pk %}
+                {% endcomment %}
+
+                
+
+
+
+
             </dl>
         </div>
     {% endif %}
 
 
 {% endblock %}
+
+{% comment %}
+
+{% endcomment %}
